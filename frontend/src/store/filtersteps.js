@@ -58,3 +58,14 @@ export function filterStepsModified(dataset) {
 	const modified = entry.hash.value !== hashFilterSteps(entry.steps.value);
 	return modified;
 }
+
+export function defaultValue(parameter) {
+	switch (parameter.type) {
+		case 'tuple':
+			return parameter.parameters.map(parameter => defaultValue(parameter));
+		case 'list':
+			return [];
+		default:
+			return parameter.default
+	}
+}

@@ -8,7 +8,7 @@ import InlineDiff from './InlineDiff.vue';
 import LoadingIndicator from './LoadingIndicator.vue';
 import {stream} from '../stream.js';
 import { getFilters } from '../store/filters.js';
-import { getFilterSteps, saveFilterSteps, filterStepsModified } from '../store/filtersteps.js';
+import { getFilterSteps, saveFilterSteps, filterStepsModified, defaultValue } from '../store/filtersteps.js';
 import { getCategoriesForDataset } from '../store/categories.js';
 import { formatNumberSuffix } from '../format.js';
 import CategoryPicker from '../components/CategoryPicker.vue';
@@ -16,12 +16,16 @@ import IntParameter from '../components/parameters/IntParameter.vue';
 import FloatParameter from '../components/parameters/FloatParameter.vue';
 import StringParameter from '../components/parameters/StringParameter.vue';
 import BoolParameter from '../components/parameters/BoolParameter.vue';
+import ListParameter from '../components/parameters/ListParameter.vue';
+import TupleParameter from '../components/parameters/TupleParameter.vue';
 
 const ParameterComponents = {
 	'int': IntParameter,
 	'float': FloatParameter,
 	'str': StringParameter,
 	'bool': BoolParameter,
+	'list': ListParameter,
+	'tuple': TupleParameter,
 };
 
 const multiDragKey = navigator.platform.match(/^(Mac|iPhone$)/) ? 'Meta' : 'Control';
@@ -218,7 +222,7 @@ function createFilterStep(filter) {
 	return {
 		filter: filter.name,
 		language: filterRequiresLanguage({filter:filter.name}) ? languages.value[0] : null,
-		parameters: Object.fromEntries(Object.entries(filter.parameters).map(([key, parameter]) => [key, parameter.default]))
+		parameters: Object.fromEntries(Object.entries(filter.parameters).map(([key, parameter]) => [key, defaultValue(parameter)]))
 	}
 }
 
