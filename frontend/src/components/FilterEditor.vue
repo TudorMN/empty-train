@@ -12,7 +12,17 @@ import { getFilterSteps, saveFilterSteps, filterStepsModified } from '../store/f
 import { getCategoriesForDataset } from '../store/categories.js';
 import { formatNumberSuffix } from '../format.js';
 import CategoryPicker from '../components/CategoryPicker.vue';
+import IntParameter from '../components/parameters/IntParameter.vue';
+import FloatParameter from '../components/parameters/FloatParameter.vue';
+import StringParameter from '../components/parameters/StringParameter.vue';
+import BoolParameter from '../components/parameters/BoolParameter.vue';
 
+const ParameterComponents = {
+	'int': IntParameter,
+	'float': FloatParameter,
+	'str': StringParameter,
+	'bool': BoolParameter,
+};
 
 const multiDragKey = navigator.platform.match(/^(Mac|iPhone$)/) ? 'Meta' : 'Control';
 
@@ -400,19 +410,7 @@ const categoryPicker = ref();
 						</div>
 						<div v-for="(parameter, name) in filterDefinition(filterStep)?.parameters || {}">
 							<label v-bind:for="`step-${i}-${name}`">{{ name }}</label>
-							<select v-if="parameter.type == 'str' && parameter.allowed_values" v-model="filterStep.parameters[name]" v-bind:id="`step-${i}-${name}`">
-								<option v-for="value in parameter.allowed_values" v-bind:value="value">{{value}}</option>
-							</select>
-							<input v-else-if="parameter.type == 'bool'" type="checkbox" v-model="filterStep.parameters[name]" v-bind:id="`step-${i}-${name}`">
-							<input v-else-if="parameter.type == 'int' || parameter.type == 'float'"
-								type="number"
-								v-model="filterStep.parameters[name]"
-								v-bind:id="`step-${i}-${name}`"
-								v-bind:min="parameter.min"
-								v-bind:max="parameter.max"
-								v-bind:step="parameter.type == 'int' ? 1 : 0.1">
-							<input v-else type="text" v-model="filterStep.parameters[name]" v-bind:id="`step-${i}-${name}`">
-							
+							<component :is="ParameterComponents[parameter.type]" :parameter="parameter" v-model="filterStep.parameters[name]" v-bind:id="`step-${i}-${name}`"></component>
 							<small v-if="parameter.help" class="property-list-description">{{parameter.help}}</small>
 						</div>
 						<footer>
