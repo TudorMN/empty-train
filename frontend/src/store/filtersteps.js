@@ -65,7 +65,10 @@ export function defaultValue(parameter) {
 			return parameter.parameters.map(parameter => defaultValue(parameter));
 		case 'list':
 			return [];
+		case 'str':
+			return '';
 		default:
 			return parameter.default
 	}
 }
+
